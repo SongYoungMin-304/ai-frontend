@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { userService } from '../services/userService';
 import { User } from '../types';
-import './ProfilePage.css';
 
 const ProfilePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,11 +30,11 @@ const ProfilePage: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="profile-page">로딩 중...</div>;
+    return <div className="min-h-screen bg-gray-100 py-8">로딩 중...</div>;
   }
 
   if (error || !user) {
-    return <div className="profile-page"><div className="error-message">{error || '사용자를 찾을 수 없습니다'}</div></div>;
+    return <div className="min-h-screen bg-gray-100 py-8"><div className="max-w-2xl mx-auto px-4 bg-red-100 text-red-800 p-4 rounded text-center">{error || '사용자를 찾을 수 없습니다'}</div></div>;
   }
 
   const formatDate = (dateString: string) => {
@@ -48,33 +47,33 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="profile-page">
-      <div className="profile-container">
-        <div className="profile-header">
-          <div className="profile-avatar">
+    <div className="min-h-screen bg-gray-100 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="flex gap-8 bg-white rounded-lg p-8 mb-8">
+          <div className="flex-shrink-0">
             {user.profileImage ? (
-              <img src={user.profileImage} alt={user.username} />
+              <img src={user.profileImage} alt={user.username} className="w-32 h-32 rounded-full object-cover" />
             ) : (
-              <div className="default-avatar">{user.username[0]?.toUpperCase()}</div>
+              <div className="w-32 h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-5xl font-bold">{user.username[0]?.toUpperCase()}</div>
             )}
           </div>
 
-          <div className="profile-info">
-            <h1>{user.username}</h1>
-            <p className="email">{user.email}</p>
-            <p className="bio">{user.bio || '자기소개가 없습니다'}</p>
-            <p className="join-date">가입일: {formatDate(user.createdAt)}</p>
+          <div className="flex-1 flex flex-col justify-center">
+            <h1 className="m-0 mb-2 text-gray-800">{user.username}</h1>
+            <p className="my-2 text-gray-600">{user.email}</p>
+            <p className="my-4 text-gray-600 leading-relaxed">{user.bio || '자기소개가 없습니다'}</p>
+            <p className="my-2 text-gray-400 text-sm">가입일: {formatDate(user.createdAt)}</p>
           </div>
         </div>
 
-        <div className="profile-stats">
-          <div className="stat">
-            <span className="stat-value">{user.postCount}</span>
-            <span className="stat-label">게시물</span>
+        <div className="flex gap-8 bg-white rounded-lg p-8">
+          <div className="flex-1 flex flex-col items-center text-center">
+            <span className="text-4xl font-bold text-blue-600">{user.postCount}</span>
+            <span className="mt-2 text-gray-600 text-sm">게시물</span>
           </div>
-          <div className="stat">
-            <span className="stat-value">{user.commentCount}</span>
-            <span className="stat-label">댓글</span>
+          <div className="flex-1 flex flex-col items-center text-center">
+            <span className="text-4xl font-bold text-blue-600">{user.commentCount}</span>
+            <span className="mt-2 text-gray-600 text-sm">댓글</span>
           </div>
         </div>
       </div>

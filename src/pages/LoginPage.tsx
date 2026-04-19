@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './AuthPage.css';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -23,44 +22,46 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h1>로그인</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white rounded-lg p-8 w-full max-w-md shadow-md">
+        <h1 className="text-center mb-8 text-gray-800">로그인</h1>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="bg-red-100 text-red-800 px-3 py-2 rounded text-sm mb-4">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="username">사용자명</label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col">
+            <label htmlFor="username" className="mb-2 font-medium text-gray-800">사용자명</label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="admin"
+              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
               required
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">비밀번호</label>
+          <div className="flex flex-col">
+            <label htmlFor="password" className="mb-2 font-medium text-gray-800">비밀번호</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="1234"
+              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
               required
             />
           </div>
 
-          <button type="submit" disabled={loading} className="submit-btn">
+          <button type="submit" disabled={loading} className="px-3 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
             {loading ? '로그인 중...' : '로그인'}
           </button>
         </form>
 
-        <p className="auth-link">
-          계정이 없으신가요? <Link to="/signup">회원가입</Link>
+        <p className="text-center mt-6 text-gray-600">
+          계정이 없으신가요? <Link to="/signup" className="text-blue-600 font-medium hover:underline">회원가입</Link>
         </p>
       </div>
     </div>
