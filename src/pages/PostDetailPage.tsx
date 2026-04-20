@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { postService } from '../services/postService';
 import { Post } from '../types';
+import CommentSection from '../components/CommentSection';
 
 const PostDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -93,6 +94,10 @@ const PostDetailPage: React.FC = () => {
             </div>
           )}
         </article>
+
+        <div className="bg-white rounded-lg shadow-md mt-8 p-8">
+          <CommentSection postId={post.id} />
+        </div>
 
         <button onClick={() => navigate('/')} className="bg-gray-100 text-gray-800 border border-gray-300 px-4 py-2 rounded font-medium hover:bg-gray-200 mt-8">
           ← 목록으로
