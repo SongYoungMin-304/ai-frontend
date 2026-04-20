@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 interface CommentFormProps {
-  onSubmit: (content: string) => void;
+  onSubmit: (content: string) => Promise<void>;
   loading?: boolean;
   isReply?: boolean;
   onCancel?: () => void;
@@ -16,7 +16,7 @@ export default function CommentForm({
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -30,7 +30,7 @@ export default function CommentForm({
       return;
     }
 
-    onSubmit(content);
+    await onSubmit(content);
     setContent('');
   };
 

@@ -5,8 +5,8 @@ import CommentForm from './CommentForm';
 
 interface CommentItemProps {
   comment: Comment;
-  onDelete: (commentId: number) => void;
-  onReplySubmit: (parentCommentId: number, content: string) => void;
+  onDelete: (commentId: number) => Promise<void>;
+  onReplySubmit: (parentCommentId: number, content: string) => Promise<void>;
   showReplyForm: { [commentId: number]: boolean };
   onToggleReplyForm: (commentId: number) => void;
 }
@@ -27,7 +27,7 @@ export default function CommentItem({
   const handleReplySubmit = async (content: string) => {
     setReplyLoading(true);
     try {
-      onReplySubmit(comment.id, content);
+      await onReplySubmit(comment.id, content);
       onToggleReplyForm(comment.id);
     } finally {
       setReplyLoading(false);
@@ -38,13 +38,17 @@ export default function CommentItem({
     <div className="border-b border-gray-200 py-4">
       {/* 헤더 */}
       <div className="flex items-center gap-2 mb-2">
-        {comment.author.profileImage && (
-          <img
-            src={comment.author.profileImage}
-            alt={comment.author.username}
-            className="w-8 h-8 rounded-full bg-gray-300"
-          />
-        )}
+        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-semibold text-blue-700">
+          {comment.author.profileImage ? (
+            <img
+              src={comment.author.profileImage}
+              alt={comment.author.username}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            comment.author.username.charAt(0).toUpperCase()
+          )}
+        </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="font-semibold">{comment.author.username}</span>
