@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { postService } from '../services/postService';
 import { Post } from '../types';
 import CommentSection from '../components/CommentSection';
+import PostLikeButton from '../components/PostLikeButton';
 
 const PostDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -79,6 +80,11 @@ const PostDetailPage: React.FC = () => {
             <div className="flex gap-6 text-sm text-gray-400">
               <span className="flex items-center gap-1">조회 {post.viewCount}</span>
               <span className="flex items-center gap-1">댓글 {post.commentCount}</span>
+              <PostLikeButton
+                postId={post.id}
+                initialLikeCount={post.likeCount || 0}
+                initialIsLiked={post.isLiked || false}
+              />
             </div>
           </div>
 

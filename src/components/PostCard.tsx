@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../types';
+import PostLikeButton from './PostLikeButton';
 
 interface PostCardProps {
   post: Post;
@@ -30,6 +31,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       <div className="flex gap-4 text-sm text-gray-400">
         <span className="flex items-center gap-1">조회 {post.viewCount}</span>
         <span className="flex items-center gap-1">댓글 {post.commentCount}</span>
+        <PostLikeButton
+          postId={post.id}
+          initialLikeCount={post.likeCount || 0}
+          initialIsLiked={post.isLiked || false}
+        />
       </div>
     </div>
   );

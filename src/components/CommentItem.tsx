@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Comment } from '../types';
 import { useAuth } from '../context/AuthContext';
 import CommentForm from './CommentForm';
+import CommentLikeButton from './CommentLikeButton';
 
 interface CommentItemProps {
   comment: Comment;
@@ -70,12 +71,19 @@ export default function CommentItem({
 
       {/* 액션 버튼 */}
       {!showReplyForm[comment.id] && (
-        <button
-          onClick={() => onToggleReplyForm(comment.id)}
-          className="text-xs text-gray-600 hover:text-gray-900 font-medium"
-        >
-          답글
-        </button>
+        <div className="flex items-center gap-3">
+          <CommentLikeButton
+            commentId={comment.id}
+            initialLikeCount={comment.likeCount || 0}
+            initialIsLiked={comment.isLiked || false}
+          />
+          <button
+            onClick={() => onToggleReplyForm(comment.id)}
+            className="text-xs text-gray-600 hover:text-gray-900 font-medium"
+          >
+            답글
+          </button>
+        </div>
       )}
 
       {/* 답글 폼 */}

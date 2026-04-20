@@ -22,6 +22,8 @@ export interface Post {
   updatedAt: string;
   viewCount: number;
   commentCount: number;
+  likeCount?: number;
+  isLiked?: boolean;
 }
 
 export interface AuthResponse {
@@ -64,6 +66,8 @@ export interface Comment {
   updatedAt: string;
   parentCommentId?: number;
   replies: Comment[];
+  likeCount?: number;
+  isLiked?: boolean;
 }
 
 export interface CommentsResponse {
