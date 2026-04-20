@@ -29,15 +29,15 @@ export default function PostLikeButton({
     setIsLoading(true);
     try {
       if (isLiked) {
-        await api.delete(`/posts/${postId}/likes`);
-        setIsLiked(false);
-        setLikeCount((prev) => prev - 1);
-        onLikeChange?.(likeCount - 1, false);
+        const response = await api.delete(`/posts/${postId}/likes`);
+        setIsLiked(response.data.isLiked);
+        setLikeCount(response.data.likeCount);
+        onLikeChange?.(response.data.likeCount, response.data.isLiked);
       } else {
-        await api.post(`/posts/${postId}/likes`);
-        setIsLiked(true);
-        setLikeCount((prev) => prev + 1);
-        onLikeChange?.(likeCount + 1, true);
+        const response = await api.post(`/posts/${postId}/likes`);
+        setIsLiked(response.data.isLiked);
+        setLikeCount(response.data.likeCount);
+        onLikeChange?.(response.data.likeCount, response.data.isLiked);
       }
     } catch (error: any) {
       console.error('좋아요 처리 중 오류:', error);
