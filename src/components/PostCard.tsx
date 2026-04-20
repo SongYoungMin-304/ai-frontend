@@ -34,7 +34,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <PostLikeButton
           postId={post.id}
           initialLikeCount={post.likeCount || 0}
-          initialIsLiked={post.isLiked || false}
+          initialLiked={post.liked || false}
         />
       </div>
     </div>

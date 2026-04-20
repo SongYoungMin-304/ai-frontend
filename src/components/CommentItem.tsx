@@ -75,7 +75,7 @@ export default function CommentItem({
           <CommentLikeButton
             commentId={comment.id}
             initialLikeCount={comment.likeCount || 0}
-            initialIsLiked={comment.isLiked || false}
+            initialLiked={comment.liked || false}
           />
           <button
             onClick={() => onToggleReplyForm(comment.id)}

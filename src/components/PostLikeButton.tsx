@@ -5,18 +5,18 @@ import api from '../services/api';
 interface PostLikeButtonProps {
   postId: number;
   initialLikeCount?: number;
-  initialIsLiked?: boolean;
-  onLikeChange?: (likeCount: number, isLiked: boolean) => void;
+  initialLiked?: boolean;
+  onLikeChange?: (likeCount: number, liked: boolean) => void;
 }
 
 export default function PostLikeButton({
   postId,
   initialLikeCount = 0,
-  initialIsLiked = false,
+  initialLiked = false,
   onLikeChange,
 }: PostLikeButtonProps) {
   const { user } = useAuth();
-  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,22 +26,30 @@ export default function PostLikeButton({
       return;
     }
 
+    const prevLiked = isLiked;
+    const prevCount = likeCount;
+
+    setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
     setIsLoading(true);
+
     try {
       if (isLiked) {
         const response = await api.delete(`/posts/${postId}/likes`);
-        setIsLiked(response.data.isLiked);
+        setIsLiked(response.data.liked);
         setLikeCount(response.data.likeCount);
-        onLikeChange?.(response.data.likeCount, response.data.isLiked);
+        onLikeChange?.(response.data.likeCount, response.data.liked);
       } else {
         const response = await api.post(`/posts/${postId}/likes`);
-        setIsLiked(response.data.isLiked);
+        setIsLiked(response.data.liked);
         setLikeCount(response.data.likeCount);
-        onLikeChange?.(response.data.likeCount, response.data.isLiked);
+        onLikeChange?.(response.data.likeCount, response.data.liked);
       }
     } catch (error: any) {
       console.error('좋아요 처리 중 오류:', error);
       console.error('에러 응답:', error.response?.data);
+      setIsLiked(prevLiked);
+      setLikeCount(prevCount);
       const message = error.response?.data?.message || '좋아요 처리 중 오류가 발생했습니다';
       alert(message);
     } finally {

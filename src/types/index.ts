@@ -23,7 +23,7 @@ export interface Post {
   viewCount: number;
   commentCount: number;
   likeCount?: number;
-  isLiked?: boolean;
+  liked?: boolean;
 }
 
 export interface AuthResponse {
@@ -67,7 +67,7 @@ export interface Comment {
   parentCommentId?: number;
   replies: Comment[];
   likeCount?: number;
-  isLiked?: boolean;
+  liked?: boolean;
 }
 
 export interface CommentsResponse {
