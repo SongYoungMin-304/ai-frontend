@@ -6,6 +6,8 @@ import { postService } from '../services/postService';
 const CreatePostPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useAuth();
@@ -26,6 +28,32 @@ const CreatePostPage: React.FC = () => {
     );
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError('이미지 파일만 업로드 가능합니다');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setError('이미지 크기는 10MB 이하만 가능합니다');
+        return;
+      }
+      
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -42,7 +70,7 @@ const CreatePostPage: React.FC = () => {
 
     try {
       setLoading(true);
-      await postService.createPost(title, content);
+      await postService.createPost(title, content, imageFile);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || '게시글 작성에 실패했습니다');
@@ -84,6 +112,29 @@ const CreatePostPage: React.FC = () => {
               className="px-3 py-2 border border-gray-300 rounded resize-y focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
               required
             />
+          </div>
+
+          <div className="flex flex-col mb-6">
+            <label htmlFor="image" className="mb-2 font-medium text-gray-800">이미지 첨부</label>
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600"
+            />
+            {imagePreview && (
+              <div className="mt-4 relative">
+                <img src={imagePreview} alt="Preview" className="max-w-full h-auto rounded border border-gray-300" />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                >
+                  삭제
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-4 mt-8">

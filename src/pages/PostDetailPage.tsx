@@ -4,6 +4,7 @@ import { postService } from '../services/postService';
 import { Post } from '../types';
 import CommentSection from '../components/CommentSection';
 import PostLikeButton from '../components/PostLikeButton';
+import PostNavigationButtons from '../components/PostNavigationButtons';
 
 const PostDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -94,6 +95,16 @@ const PostDetailPage: React.FC = () => {
             ))}
           </div>
 
+          {post.imageUrl && (
+            <div className="mb-8">
+              <img 
+                src={`http://localhost:8080/uploads/${post.imageUrl}`} 
+                alt="첨부 이미지" 
+                className="max-w-full h-auto rounded-lg border border-gray-300"
+              />
+            </div>
+          )}
+
           {post.createdAt !== post.updatedAt && (
             <div className="pt-4 border-t border-gray-200 text-gray-400 text-xs">
               수정됨: {formatDate(post.updatedAt)}
@@ -104,6 +115,8 @@ const PostDetailPage: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md mt-8 p-8">
           <CommentSection postId={post.id} />
         </div>
+
+        <PostNavigationButtons currentPostId={post.id} />
 
         <button onClick={() => navigate('/')} className="bg-gray-100 text-gray-800 border border-gray-300 px-4 py-2 rounded font-medium hover:bg-gray-200 mt-8">
           ← 목록으로

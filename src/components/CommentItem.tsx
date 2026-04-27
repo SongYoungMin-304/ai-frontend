@@ -7,7 +7,7 @@ import CommentLikeButton from './CommentLikeButton';
 interface CommentItemProps {
   comment: Comment;
   onDelete: (commentId: number) => Promise<void>;
-  onReplySubmit: (parentCommentId: number, content: string) => Promise<void>;
+  onReplySubmit: (parentCommentId: number, content: string, image?: File | null) => Promise<void>;
   showReplyForm: { [commentId: number]: boolean };
   onToggleReplyForm: (commentId: number) => void;
 }
@@ -25,10 +25,10 @@ export default function CommentItem({
   const isAuthor = user?.id === comment.author.id;
   const createdDate = new Date(comment.createdAt).toLocaleDateString('ko-KR');
 
-  const handleReplySubmit = async (content: string) => {
+  const handleReplySubmit = async (content: string, image?: File | null) => {
     setReplyLoading(true);
     try {
-      await onReplySubmit(comment.id, content);
+      await onReplySubmit(comment.id, content, image);
       onToggleReplyForm(comment.id);
     } finally {
       setReplyLoading(false);
@@ -66,10 +66,19 @@ export default function CommentItem({
         )}
       </div>
 
-      {/* 본문 */}
       <p className="text-gray-800 mb-3">{comment.content}</p>
 
-      {/* 액션 버튼 */}
+      {comment.imageUrl && (
+        <div className="mb-3">
+          <img 
+            src={`http://localhost:8080/uploads/${comment.imageUrl}`} 
+            alt="첨부 이미지" 
+            className="max-w-sm h-auto rounded-lg border border-gray-300"
+          />
+        </div>
+      )}
+
+
       {!showReplyForm[comment.id] && (
         <div className="flex items-center gap-3">
           <CommentLikeButton

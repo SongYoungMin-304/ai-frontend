@@ -13,6 +13,7 @@ export interface Post {
   id: number;
   title: string;
   content: string;
+  imageUrl?: string;
   author: {
     id: number;
     username: string;
@@ -57,6 +58,7 @@ export interface Comment {
   id: number;
   postId: number;
   content: string;
+  imageUrl?: string;
   author: {
     id: number;
     username: string;

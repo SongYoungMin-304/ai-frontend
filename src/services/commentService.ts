@@ -8,15 +8,23 @@ export const commentService = {
     return response.data;
   },
 
-  // 댓글 작성
-  createComment: async (postId: number, content: string): Promise<Comment> => {
-    const response = await api.post(`/posts/${postId}/comments`, { content });
+  createComment: async (postId: number, content: string, image?: File | null): Promise<Comment> => {
+    const formData = new FormData();
+    formData.append('content', content);
+    if (image) {
+      formData.append('image', image);
+    }
+    const response = await api.post(`/posts/${postId}/comments`, formData);
     return response.data;
   },
 
-  // 대댓글 작성 (답글)
-  createReply: async (parentCommentId: number, content: string): Promise<Comment> => {
-    const response = await api.post(`/comments/${parentCommentId}/replies`, { content });
+  createReply: async (parentCommentId: number, content: string, image?: File | null): Promise<Comment> => {
+    const formData = new FormData();
+    formData.append('content', content);
+    if (image) {
+      formData.append('image', image);
+    }
+    const response = await api.post(`/comments/${parentCommentId}/replies`, formData);
     return response.data;
   },
 
