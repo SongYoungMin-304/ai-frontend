@@ -29,7 +29,7 @@ export default function CommentForm({
         setError('이미지 크기는 10MB 이하만 가능합니다');
         return;
       }
-      
+
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -65,60 +65,95 @@ export default function CommentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={isReply ? 'ml-12 mt-2 mb-4' : 'mb-6'}>
-      <div className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit} className={isReply ? 'mb-2' : 'mb-8'}>
+      <div className="overflow-hidden rounded-2xl border border-ink-200 bg-white transition-colors duration-150 focus-within:border-accent-400 focus-within:ring-4 focus-within:ring-accent-100">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder={isReply ? '답글을 입력해주세요' : '댓글을 입력해주세요'}
-          className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder={isReply ? '답글을 남겨보세요' : '따뜻한 댓글을 남겨주세요'}
+          className="w-full resize-none border-0 bg-transparent px-4 py-3 text-[15px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
           rows={isReply ? 2 : 3}
           disabled={loading}
         />
-        {!isReply && (
-          <div className="flex flex-col gap-2">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              disabled={loading}
-              className="text-sm"
-            />
-            {imagePreview && (
-              <div className="relative">
-                <img src={imagePreview} alt="Preview" className="max-w-xs h-auto rounded border border-gray-300" />
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700"
+
+        {imagePreview && (
+          <div className="mx-4 mb-3 overflow-hidden rounded-xl border border-ink-200">
+            <div className="relative">
+              <img src={imagePreview} alt="Preview" className="max-w-xs" />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-ink-900/80 text-white backdrop-blur-md transition-all hover:bg-ink-900"
+                aria-label="이미지 삭제"
+              >
+                <svg
+                  className="h-3.5 w-3.5"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                 >
-                  삭제
-                </button>
-              </div>
-            )}
+                  <path d="M5 5l10 10M15 5L5 15" />
+                </svg>
+              </button>
+            </div>
           </div>
         )}
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        <div className="flex items-center justify-between gap-2 border-t border-ink-100 bg-ink-50/40 px-3 py-2">
+          {!isReply ? (
+            <label className="flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-ink-500 transition-colors hover:bg-white hover:text-ink-900">
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <rect x="2.5" y="2.5" width="15" height="15" rx="2" />
+                <circle cx="7" cy="7" r="1.5" />
+                <path d="M17.5 13l-4-4-9 8.5" />
+              </svg>
+              이미지
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={loading}
+                className="hidden"
+              />
+            </label>
+          ) : (
+            <span className="text-xs font-medium text-ink-400">↳ 답글 작성</span>
+          )}
+
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-medium text-ink-400">
+              {content.length}/500
+            </span>
+            {isReply && onCancel && (
+              <button
+                type="button"
+                onClick={onCancel}
+                disabled={loading}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-ink-500 transition-colors hover:bg-white hover:text-ink-900 disabled:opacity-50"
+              >
+                취소
+              </button>
+            )}
+            <button
+              type="submit"
+              disabled={loading || !content.trim()}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-ink-900 px-3.5 py-1.5 text-xs font-semibold text-white transition-all duration-150 hover:bg-ink-800 disabled:cursor-not-allowed disabled:bg-ink-300"
+            >
+              {loading ? '작성 중...' : isReply ? '답글' : '등록'}
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="flex gap-2 mt-2 justify-end">
-        {isReply && onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={loading}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50"
-          >
-            취소
-          </button>
-        )}
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
-        >
-          {loading ? '작성 중...' : isReply ? '답글 작성' : '댓글 작성'}
-        </button>
-      </div>
+
+      {error && <p className="mt-2 text-xs font-medium text-rose-600">{error}</p>}
     </form>
   );
 }

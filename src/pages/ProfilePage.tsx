@@ -30,11 +30,34 @@ const ProfilePage: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen bg-gray-100 py-8">로딩 중...</div>;
+    return (
+      <div className="min-h-screen pt-10">
+        <div className="mx-auto max-w-3xl px-6">
+          <div className="card animate-pulse p-10">
+            <div className="flex gap-6">
+              <div className="h-28 w-28 rounded-full bg-ink-100" />
+              <div className="flex-1 space-y-3">
+                <div className="h-6 w-1/3 rounded bg-ink-100" />
+                <div className="h-4 w-2/3 rounded bg-ink-100" />
+                <div className="h-4 w-1/2 rounded bg-ink-100" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error || !user) {
-    return <div className="min-h-screen bg-gray-100 py-8"><div className="max-w-2xl mx-auto px-4 bg-red-100 text-red-800 p-4 rounded text-center">{error || '사용자를 찾을 수 없습니다'}</div></div>;
+    return (
+      <div className="min-h-screen pt-10">
+        <div className="mx-auto max-w-3xl px-6">
+          <div className="card px-6 py-12 text-center text-sm font-medium text-rose-700">
+            {error || '사용자를 찾을 수 없습니다'}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const formatDate = (dateString: string) => {
@@ -47,33 +70,61 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="flex gap-8 bg-white rounded-lg p-8 mb-8">
-          <div className="flex-shrink-0">
-            {user.profileImage ? (
-              <img src={user.profileImage} alt={user.username} className="w-32 h-32 rounded-full object-cover" />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-blue-600 text-white flex items-center justify-center text-5xl font-bold">{user.username[0]?.toUpperCase()}</div>
-            )}
+    <div className="min-h-screen pb-24 pt-10">
+      <div className="mx-auto max-w-3xl px-6">
+        <div className="card animate-fade-up overflow-hidden">
+          <div className="relative h-32 bg-gradient-to-br from-accent-100 via-accent-50 to-ink-50">
+            <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_30%_50%,rgba(99,102,241,0.18),transparent_60%)]" />
           </div>
 
-          <div className="flex-1 flex flex-col justify-center">
-            <h1 className="m-0 mb-2 text-gray-800">{user.username}</h1>
-            <p className="my-2 text-gray-600">{user.email}</p>
-            <p className="my-4 text-gray-600 leading-relaxed">{user.bio || '자기소개가 없습니다'}</p>
-            <p className="my-2 text-gray-400 text-sm">가입일: {formatDate(user.createdAt)}</p>
+          <div className="px-8 pb-8 pt-0 sm:px-10">
+            <div className="-mt-14 flex flex-col items-start gap-5 sm:flex-row sm:items-end">
+              {user.profileImage ? (
+                <img
+                  src={user.profileImage}
+                  alt={user.username}
+                  className="h-28 w-28 rounded-full border-4 border-white object-cover shadow-card-hover"
+                />
+              ) : (
+                <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br from-accent-500 to-accent-700 font-display text-4xl font-bold text-white shadow-card-hover">
+                  {user.username[0]?.toUpperCase()}
+                </div>
+              )}
+
+              <div className="flex-1 pb-1">
+                <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+                  {user.username}
+                </h1>
+                <p className="mt-1 text-sm text-ink-500">{user.email}</p>
+              </div>
+            </div>
+
+            <p className="mt-6 whitespace-pre-wrap text-[15px] leading-relaxed text-ink-700">
+              {user.bio || '자기소개가 없습니다'}
+            </p>
+
+            <p className="mt-6 text-xs font-medium text-ink-400">
+              가입일 · {formatDate(user.createdAt)}
+            </p>
           </div>
         </div>
 
-        <div className="flex gap-8 bg-white rounded-lg p-8">
-          <div className="flex-1 flex flex-col items-center text-center">
-            <span className="text-4xl font-bold text-blue-600">{user.postCount}</span>
-            <span className="mt-2 text-gray-600 text-sm">게시물</span>
+        <div className="mt-6 grid grid-cols-2 gap-4">
+          <div className="card flex flex-col items-center justify-center px-6 py-8 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+            <span className="font-display text-4xl font-semibold tabular-nums text-ink-900">
+              {user.postCount}
+            </span>
+            <span className="mt-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink-500">
+              Posts
+            </span>
           </div>
-          <div className="flex-1 flex flex-col items-center text-center">
-            <span className="text-4xl font-bold text-blue-600">{user.commentCount}</span>
-            <span className="mt-2 text-gray-600 text-sm">댓글</span>
+          <div className="card flex flex-col items-center justify-center px-6 py-8 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+            <span className="font-display text-4xl font-semibold tabular-nums text-ink-900">
+              {user.commentCount}
+            </span>
+            <span className="mt-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink-500">
+              Comments
+            </span>
           </div>
         </div>
       </div>

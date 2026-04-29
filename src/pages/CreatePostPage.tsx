@@ -15,14 +15,31 @@ const CreatePostPage: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-100 py-8">
-        <div className="max-w-2xl mx-auto px-4">
-          <div className="bg-red-100 text-red-800 p-4 rounded mb-4">
-            로그인 후 게시글을 작성할 수 있습니다.
+      <div className="min-h-screen pt-10">
+        <div className="mx-auto max-w-md px-6">
+          <div className="card flex flex-col items-center px-6 py-14 text-center">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-100 text-ink-500">
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              >
+                <rect x="5" y="11" width="14" height="9" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+            </div>
+            <h2 className="font-display text-xl font-semibold text-ink-900">
+              로그인이 필요해요
+            </h2>
+            <p className="mt-1 text-sm text-ink-500">
+              로그인 후 게시글을 작성할 수 있습니다.
+            </p>
+            <button onClick={() => navigate('/login')} className="btn-primary mt-6">
+              로그인하기
+            </button>
           </div>
-          <button onClick={() => navigate('/login')} className="bg-blue-600 text-white px-8 py-2 rounded font-medium hover:bg-blue-700">
-            로그인하기
-          </button>
         </div>
       </div>
     );
@@ -39,7 +56,7 @@ const CreatePostPage: React.FC = () => {
         setError('이미지 크기는 10MB 이하만 가능합니다');
         return;
       }
-      
+
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -80,73 +97,162 @@ const CreatePostPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        <h1 className="mb-8 text-gray-800">게시글 작성</h1>
+    <div className="min-h-screen pb-24 pt-10">
+      <div className="mx-auto max-w-3xl px-6">
+        <header className="mb-8 animate-fade-up">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent-600">
+            New Story
+          </p>
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900">
+            게시글 작성
+          </h1>
+          <p className="mt-2 text-sm text-ink-500">
+            마음 속 이야기를 자유롭게 남겨보세요.
+          </p>
+        </header>
 
-        {error && <div className="bg-red-100 text-red-800 p-4 rounded mb-4">{error}</div>}
+        {error && (
+          <div className="mb-5 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-sm font-medium text-rose-800">
+            <svg
+              className="mt-0.5 h-4 w-4 shrink-0"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="10" cy="10" r="8" />
+              <path d="M10 6v5M10 14h.01" strokeLinecap="round" />
+            </svg>
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 shadow-md">
-          <div className="flex flex-col mb-6">
-            <label htmlFor="title" className="mb-2 font-medium text-gray-800">제목</label>
+        <form
+          onSubmit={handleSubmit}
+          className="card animate-fade-up overflow-hidden p-8 sm:p-10"
+        >
+          <div className="mb-6">
+            <label htmlFor="title" className="label-text">
+              제목
+            </label>
             <input
               type="text"
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="게시글 제목을 입력해주세요"
+              placeholder="어떤 이야기를 들려주실 건가요?"
               maxLength={255}
-              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              className="input-field text-lg font-medium"
               required
             />
+            <p className="mt-1.5 text-right text-xs text-ink-400">
+              {title.length} / 255
+            </p>
           </div>
 
-          <div className="flex flex-col mb-6">
-            <label htmlFor="content" className="mb-2 font-medium text-gray-800">내용</label>
+          <div className="mb-6">
+            <label htmlFor="content" className="label-text">
+              내용
+            </label>
             <textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="게시글 내용을 입력해주세요"
-              rows={15}
-              className="px-3 py-2 border border-gray-300 rounded resize-y focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              placeholder="자유롭게 적어주세요..."
+              rows={14}
+              className="input-field resize-y leading-relaxed"
               required
             />
           </div>
 
-          <div className="flex flex-col mb-6">
-            <label htmlFor="image" className="mb-2 font-medium text-gray-800">이미지 첨부</label>
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600"
-            />
-            {imagePreview && (
-              <div className="mt-4 relative">
-                <img src={imagePreview} alt="Preview" className="max-w-full h-auto rounded border border-gray-300" />
+          <div className="mb-2">
+            <label className="label-text">이미지 첨부</label>
+            {!imagePreview ? (
+              <label
+                htmlFor="image"
+                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ink-200 bg-ink-50/50 px-6 py-10 text-center transition-all duration-200 hover:border-accent-300 hover:bg-accent-50/50"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-ink-500 shadow-card">
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
+                </span>
+                <span className="text-sm font-medium text-ink-700">
+                  클릭하여 이미지 업로드
+                </span>
+                <span className="text-xs text-ink-400">PNG, JPG · 최대 10MB</span>
+                <input
+                  type="file"
+                  id="image"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            ) : (
+              <div className="relative overflow-hidden rounded-xl border border-ink-200">
+                <img src={imagePreview} alt="Preview" className="h-auto w-full" />
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink-900/80 text-white backdrop-blur-md transition-all hover:bg-ink-900"
+                  aria-label="이미지 삭제"
                 >
-                  삭제
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  >
+                    <path d="M5 5l10 10M15 5L5 15" />
+                  </svg>
                 </button>
               </div>
             )}
           </div>
 
-          <div className="flex gap-4 mt-8">
-            <button type="submit" disabled={loading} className="flex-1 px-3 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
-              {loading ? '작성 중...' : '게시글 작성'}
-            </button>
+          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-ink-100 pt-6 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="flex-1 px-3 py-2 bg-gray-100 text-gray-800 rounded font-medium border border-gray-300 hover:bg-gray-200"
+              className="btn-secondary sm:w-auto"
             >
               취소
+            </button>
+            <button type="submit" disabled={loading} className="btn-primary sm:w-auto">
+              {loading ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeOpacity="0.25"
+                    />
+                    <path
+                      d="M17 10a7 7 0 0 0-7-7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  작성 중...
+                </>
+              ) : (
+                '게시하기'
+              )}
             </button>
           </div>
         </form>

@@ -22,47 +22,70 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white rounded-lg p-8 w-full max-w-md shadow-md">
-        <h1 className="text-center mb-8 text-gray-800">로그인</h1>
-
-        {error && <div className="bg-red-100 text-red-800 px-3 py-2 rounded text-sm mb-4">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col">
-            <label htmlFor="username" className="mb-2 font-medium text-gray-800">사용자명</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="admin"
-              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-              required
-            />
+    <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md animate-fade-up">
+        <div className="card overflow-hidden p-8 sm:p-10">
+          <div className="mb-8 text-center">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent-600">
+              Welcome back
+            </p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+              로그인
+            </h1>
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="password" className="mb-2 font-medium text-gray-800">비밀번호</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="1234"
-              className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-              required
-            />
-          </div>
+          {error && (
+            <div className="mb-5 rounded-xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-sm font-medium text-rose-800">
+              {error}
+            </div>
+          )}
 
-          <button type="submit" disabled={loading} className="px-3 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
-            {loading ? '로그인 중...' : '로그인'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div>
+              <label htmlFor="username" className="label-text">
+                사용자명
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin"
+                className="input-field"
+                required
+              />
+            </div>
 
-        <p className="text-center mt-6 text-gray-600">
-          계정이 없으신가요? <Link to="/signup" className="text-blue-600 font-medium hover:underline">회원가입</Link>
-        </p>
+            <div>
+              <label htmlFor="password" className="label-text">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••"
+                className="input-field"
+                required
+              />
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-primary mt-2 w-full">
+              {loading ? '로그인 중...' : '로그인'}
+            </button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-ink-500">
+            계정이 없으신가요?{' '}
+            <Link
+              to="/signup"
+              className="font-semibold text-accent-700 transition-colors hover:text-accent-800"
+            >
+              회원가입
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

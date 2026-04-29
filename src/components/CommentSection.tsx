@@ -5,9 +5,6 @@ import { commentService } from '../services/commentService';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 
-// 모킹 데이터
-const MOCK_COMMENTS: Comment[] = [];
-
 interface CommentSectionProps {
   postId: number;
 }
@@ -22,7 +19,6 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   }>({});
   const [commentLoading, setCommentLoading] = useState(false);
 
-  // API에서 댓글 로드
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -59,7 +55,11 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     }
   };
 
-  const handleReplySubmit = async (parentCommentId: number, content: string, image?: File | null) => {
+  const handleReplySubmit = async (
+    parentCommentId: number,
+    content: string,
+    image?: File | null,
+  ) => {
     if (!user) {
       setError('로그인 후 답글을 작성할 수 있습니다');
       return;
@@ -69,11 +69,17 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     try {
       const newReply = await commentService.createReply(parentCommentId, content, image);
 
-      // 재귀 함수: 깊은 위치의 대댓글 추가
-      const addReplyRecursive = (arr: Comment[], parentId: number, reply: Comment): Comment[] => {
+      const addReplyRecursive = (
+        arr: Comment[],
+        parentId: number,
+        reply: Comment,
+      ): Comment[] => {
         return arr.map((c) => ({
           ...c,
-          replies: c.id === parentId ? [...c.replies, reply] : addReplyRecursive(c.replies, parentId, reply),
+          replies:
+            c.id === parentId
+              ? [...c.replies, reply]
+              : addReplyRecursive(c.replies, parentId, reply),
         }));
       };
 
@@ -87,12 +93,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     }
   };
 
-  // 댓글 삭제 (재귀)
   const handleDelete = async (commentId: number) => {
     try {
       await commentService.deleteComment(commentId);
 
-      // 재귀 함수: 깊은 위치의 댓글 삭제
       const deleteCommentRecursive = (arr: Comment[], id: number): Comment[] => {
         return arr
           .filter((c) => c.id !== id)
@@ -117,21 +121,39 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   };
 
   return (
-    <div className="border-t pt-6">
-      <h3 className="text-lg font-bold mb-6">댓글 ({comments.length})</h3>
+    <section>
+      <div className="mb-6 flex items-baseline gap-2">
+        <h3 className="font-display text-xl font-semibold text-ink-900">댓글</h3>
+        <span className="text-sm font-semibold text-accent-600">
+          {comments.length}
+        </span>
+      </div>
 
-      {error && <div className="text-red-500 mb-4 p-3 bg-red-50 rounded-lg">{error}</div>}
+      {error && (
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-sm font-medium text-rose-800">
+          {error}
+        </div>
+      )}
 
       {!user ? (
-        <div className="text-gray-600 mb-6 p-4 bg-gray-50 rounded-lg">
-          댓글을 작성하려면 로그인해주세요.
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-dashed border-ink-200 bg-ink-50/60 px-5 py-4">
+          <p className="text-sm text-ink-600">
+            댓글을 작성하려면 로그인이 필요해요.
+          </p>
         </div>
       ) : (
         <CommentForm onSubmit={handleCommentSubmit} loading={commentLoading} />
       )}
 
       {loading ? (
-        <div className="text-center py-8">로딩 중...</div>
+        <div className="space-y-3 py-4">
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="h-20 animate-pulse rounded-xl border border-ink-100 bg-ink-50/40"
+            />
+          ))}
+        </div>
       ) : (
         <CommentList
           comments={comments}
@@ -141,6 +163,6 @@ export default function CommentSection({ postId }: CommentSectionProps) {
           onToggleReplyForm={handleToggleReplyForm}
         />
       )}
-    </div>
+    </section>
   );
 }

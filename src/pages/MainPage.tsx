@@ -31,56 +31,131 @@ const MainPage: React.FC = () => {
     fetchPosts();
   }, [page]);
 
-  if (loading && posts.length === 0) {
-    return <div className="min-h-screen bg-gray-100 py-8">로딩 중...</div>;
-  }
-
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-gray-800">게시글</h1>
-          {isAuthenticated && (
-            <Link to="/posts/create" className="bg-blue-600 text-white px-6 py-2 rounded font-medium hover:bg-blue-700">
-              게시글 작성
-            </Link>
-          )}
-        </div>
+    <div className="min-h-screen pb-24 pt-10">
+      <div className="mx-auto max-w-3xl px-6">
+        <header className="mb-10 animate-fade-up">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent-600">
+            Community Board
+          </p>
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
+                오늘의 이야기
+              </h1>
+              <p className="mt-2 text-[15px] text-ink-500">
+                생각을 나누고, 함께 자라는 공간.
+              </p>
+            </div>
+            {isAuthenticated && (
+              <Link to="/posts/create" className="btn-primary shrink-0">
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                >
+                  <path d="M10 4v12M4 10h12" />
+                </svg>
+                글쓰기
+              </Link>
+            )}
+          </div>
+        </header>
 
-        {error && <div className="bg-red-100 text-red-800 p-4 rounded mb-4">{error}</div>}
+        {error && (
+          <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-sm font-medium text-rose-800">
+            {error}
+          </div>
+        )}
 
-        {posts.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
-            <p>게시글이 없습니다</p>
+        {loading && posts.length === 0 ? (
+          <div className="space-y-4">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-36 animate-pulse rounded-2xl border border-ink-200/70 bg-white"
+              />
+            ))}
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="card flex flex-col items-center justify-center px-6 py-20 text-center">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ink-100 text-ink-400">
+              <svg
+                className="h-7 w-7"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              >
+                <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V6z" />
+              </svg>
+            </div>
+            <p className="text-base font-medium text-ink-700">아직 게시글이 없어요</p>
+            <p className="mt-1 text-sm text-ink-400">
+              첫 번째 이야기의 주인공이 되어보세요.
+            </p>
           </div>
         ) : (
           <>
-            <div className="flex flex-col">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+            <div className="flex flex-col gap-4">
+              {posts.map((post, idx) => (
+                <div
+                  key={post.id}
+                  className="animate-fade-up"
+                  style={{ animationDelay: `${Math.min(idx, 6) * 60}ms` }}
+                >
+                  <PostCard post={post} />
+                </div>
               ))}
             </div>
 
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-8">
+              <nav className="mt-10 flex items-center justify-center gap-2">
                 <button
                   disabled={page === 0}
                   onClick={() => setPage(page - 1)}
-                  className="px-4 py-2 border border-gray-300 bg-white rounded font-medium hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-ink-200 bg-white text-ink-600 transition-all duration-150 hover:border-ink-300 hover:bg-ink-50 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
+                  aria-label="이전 페이지"
                 >
-                  이전
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  >
+                    <path d="M12 5l-5 5 5 5" />
+                  </svg>
                 </button>
-                <span className="font-medium text-gray-600 min-w-20 text-center">
-                  {page + 1} / {totalPages}
-                </span>
+                <div className="flex items-center gap-1 px-3 text-sm font-medium text-ink-600">
+                  <span className="font-display text-base font-semibold text-ink-900">
+                    {page + 1}
+                  </span>
+                  <span className="text-ink-300">/</span>
+                  <span>{totalPages}</span>
+                </div>
                 <button
                   disabled={page === totalPages - 1}
                   onClick={() => setPage(page + 1)}
-                  className="px-4 py-2 border border-gray-300 bg-white rounded font-medium hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-ink-200 bg-white text-ink-600 transition-all duration-150 hover:border-ink-300 hover:bg-ink-50 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
+                  aria-label="다음 페이지"
                 >
-                  다음
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  >
+                    <path d="M8 5l5 5-5 5" />
+                  </svg>
                 </button>
-              </div>
+              </nav>
             )}
           </>
         )}
