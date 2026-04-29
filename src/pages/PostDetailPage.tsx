@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { postService } from '../services/postService';
 import { Post } from '../types';
@@ -12,6 +12,7 @@ const PostDetailPage: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -28,7 +29,8 @@ const PostDetailPage: React.FC = () => {
       }
     };
 
-    if (id) {
+    if (id && !hasFetched.current) {
+      hasFetched.current = true;
       fetchPost();
     }
   }, [id]);
