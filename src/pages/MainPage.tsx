@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
-import { Post, PostsResponse } from '../types';
+import { Post, PostsResponse, Category, CategoryLabels } from '../types';
 import PostCard from '../components/PostCard';
 
 const MainPage: React.FC = () => {
@@ -12,12 +12,13 @@ const MainPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<Category | undefined>(undefined);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response: PostsResponse = await postService.getPosts(page);
+        const response: PostsResponse = await postService.getPosts(page, selectedCategory);
         setPosts(response.content);
         setTotalPages(response.totalPages);
       } catch (err: any) {
@@ -29,22 +30,27 @@ const MainPage: React.FC = () => {
     };
 
     fetchPosts();
-  }, [page]);
+  }, [page, selectedCategory]);
+
+  const handleCategoryChange = (category: Category | undefined) => {
+    setSelectedCategory(category);
+    setPage(0);
+  };
 
   return (
     <div className="min-h-screen pb-24 pt-10">
       <div className="mx-auto max-w-3xl px-6">
         <header className="mb-10 animate-fade-up">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent-600">
-            Community Board
+            IT Career Consulting
           </p>
           <div className="flex items-end justify-between gap-4">
             <div>
               <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
-                오늘의 이야기
+                IT 취업 컨설팅
               </h1>
               <p className="mt-2 text-[15px] text-ink-500">
-                생각을 나누고, 함께 자라는 공간.
+                함께 성장하는 IT 커리어 커뮤니티
               </p>
             </div>
             {isAuthenticated && (
@@ -62,6 +68,32 @@ const MainPage: React.FC = () => {
                 글쓰기
               </Link>
             )}
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-2">
+            <button
+              onClick={() => handleCategoryChange(undefined)}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                selectedCategory === undefined
+                  ? 'bg-accent-600 text-white shadow-sm'
+                  : 'bg-white border border-ink-200 text-ink-700 hover:border-accent-300 hover:bg-accent-50'
+              }`}
+            >
+              전체
+            </button>
+            {Object.entries(CategoryLabels).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => handleCategoryChange(key as Category)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                  selectedCategory === key
+                    ? 'bg-accent-600 text-white shadow-sm'
+                    : 'bg-white border border-ink-200 text-ink-700 hover:border-accent-300 hover:bg-accent-50'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </header>
 

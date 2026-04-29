@@ -1,5 +1,5 @@
 import api from './api';
-import { Post, PostsResponse } from '../types';
+import { Post, PostsResponse, Category } from '../types';
 
 export interface NeighborPost {
   id: number;
@@ -15,9 +15,14 @@ export interface NeighborsResponse {
 }
 
 export const postService = {
-  getPosts: async (page: number = 0): Promise<PostsResponse> => {
+  getPosts: async (page: number = 0, category?: Category): Promise<PostsResponse> => {
     const response = await api.get('/posts', {
-      params: { page, size: 10, sort: 'createdAt,desc' },
+      params: { 
+        page, 
+        size: 10, 
+        sort: 'createdAt,desc',
+        ...(category && { category })
+      },
     });
     return response.data;
   },
@@ -27,10 +32,13 @@ export const postService = {
     return response.data;
   },
 
-  createPost: async (title: string, content: string, image?: File | null): Promise<Post> => {
+  createPost: async (title: string, content: string, category?: Category, image?: File | null): Promise<Post> => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
+    if (category) {
+      formData.append('category', category);
+    }
     if (image) {
       formData.append('image', image);
     }

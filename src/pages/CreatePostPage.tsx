@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { postService } from '../services/postService';
+import { Category, CategoryLabels } from '../types';
 
 const CreatePostPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [category, setCategory] = useState<Category | undefined>(undefined);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +89,7 @@ const CreatePostPage: React.FC = () => {
 
     try {
       setLoading(true);
-      await postService.createPost(title, content, imageFile);
+      await postService.createPost(title, content, category, imageFile);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || '게시글 작성에 실패했습니다');
@@ -131,6 +133,25 @@ const CreatePostPage: React.FC = () => {
           onSubmit={handleSubmit}
           className="card animate-fade-up overflow-hidden p-8 sm:p-10"
         >
+          <div className="mb-6">
+            <label htmlFor="category" className="label-text">
+              카테고리
+            </label>
+            <select
+              id="category"
+              value={category || ''}
+              onChange={(e) => setCategory(e.target.value ? e.target.value as Category : undefined)}
+              className="input-field"
+            >
+              <option value="">카테고리 선택 (선택사항)</option>
+              {Object.entries(CategoryLabels).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="mb-6">
             <label htmlFor="title" className="label-text">
               제목

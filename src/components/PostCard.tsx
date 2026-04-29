@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Post } from '../types';
+import { Post, CategoryLabels } from '../types';
 import PostLikeButton from './PostLikeButton';
 
 interface PostCardProps {
@@ -44,6 +44,14 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <span className="text-xs font-medium text-ink-400">
           {formatDate(post.createdAt)}
         </span>
+        {post.category && (
+          <>
+            <span className="text-ink-300">·</span>
+            <span className="rounded-full bg-accent-50 px-2.5 py-0.5 text-xs font-semibold text-accent-700">
+              {CategoryLabels[post.category]}
+            </span>
+          </>
+        )}
       </div>
 
       <Link to={`/posts/${post.id}`} className="block">
