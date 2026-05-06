@@ -40,6 +40,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <span className="text-sm font-semibold text-ink-700">
           {post.author.username}
         </span>
+        {post.author.isMasterAccount && (
+          <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+            👑 마스터
+          </span>
+        )}
         <span className="text-ink-300">·</span>
         <span className="text-xs font-medium text-ink-400">
           {formatDate(post.createdAt)}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import BookingModal from '../components/BookingModal';
+import DigitalProductModal from '../components/DigitalProductModal';
+import FreeResourceForm from '../components/FreeResourceForm';
 
 interface TrustMetric {
   value: string;
@@ -126,15 +128,8 @@ const ChevronIcon: React.FC = () => (
 );
 
 const LandingPage: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [submitted, setSubmitted] = useState<boolean>(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setSubmitted(true);
-  };
+  const [showDigitalProductModal, setShowDigitalProductModal] = useState(false);
 
   return (
     <div className="min-h-screen pb-24 pt-10">
@@ -279,13 +274,27 @@ const LandingPage: React.FC = () => {
                     </button>
                   </div>
                 )}
+                {service.title === '디지털 상품' && (
+                  <div className="mt-auto pt-4">
+                    <button
+                      onClick={() => setShowDigitalProductModal(true)}
+                      className="btn-secondary w-full"
+                    >
+                      자료 신청하기
+                    </button>
+                  </div>
+                )}
               </article>
             ))}
           </div>
         </section>
-        <BookingModal 
-          isOpen={showBookingModal} 
-          onClose={() => setShowBookingModal(false)} 
+        <BookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+        />
+        <DigitalProductModal
+          isOpen={showDigitalProductModal}
+          onClose={() => setShowDigitalProductModal(false)}
         />
 
         <section id="free-resources" className="mt-24 scroll-mt-24">
@@ -319,43 +328,7 @@ const LandingPage: React.FC = () => {
                 ))}
               </ul>
 
-              {submitted ? (
-                <div className="mt-7 flex items-start gap-3 rounded-xl border border-accent-200/70 bg-accent-50 px-4 py-3.5 text-[14px] font-medium text-accent-800">
-                  <svg
-                    className="mt-0.5 h-4 w-4 shrink-0"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M4 10.5l4 4 8-9" />
-                  </svg>
-                  <span>신청해주셔서 감사합니다. 곧 이메일로 보내드릴게요.</span>
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  className="mt-7 flex flex-col gap-3 sm:flex-row"
-                >
-                  <label htmlFor="free-email" className="sr-only">
-                    이메일
-                  </label>
-                  <input
-                    id="free-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="example@email.com"
-                    className="input-field flex-1"
-                  />
-                  <button type="submit" className="btn-primary sm:px-7">
-                    무료로 받기
-                  </button>
-                </form>
-              )}
+              <FreeResourceForm className="mt-7" />
             </div>
           </div>
         </section>

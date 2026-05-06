@@ -1,9 +1,17 @@
+export enum UserTier {
+  FREE = 'FREE',
+  PREMIUM = 'PREMIUM',
+  ENTERPRISE = 'ENTERPRISE',
+}
+
 export interface User {
   id: number;
   email: string;
   username: string;
   profileImage?: string;
   bio?: string;
+  tier: UserTier;
+  isMasterAccount: boolean;
   createdAt: string;
   postCount: number;
   commentCount: number;
@@ -37,6 +45,7 @@ export interface Post {
     id: number;
     username: string;
     profileImage?: string;
+    isMasterAccount?: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -50,7 +59,8 @@ export interface AuthResponse {
   id: number;
   email: string;
   username: string;
-  profileImage?: string;
+  isMasterAccount: boolean;
+  tier: string;
   accessToken: string;
   refreshToken: string;
   createdAt: string;
@@ -82,6 +92,7 @@ export interface Comment {
     id: number;
     username: string;
     profileImage?: string;
+    isMasterAccount?: boolean;
   };
   createdAt: string;
   updatedAt: string;

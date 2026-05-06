@@ -114,12 +114,19 @@ const PostDetailPage: React.FC = () => {
                 {initial}
               </span>
               <div className="flex flex-col leading-tight">
-                <Link
-                  to={`/users/${post.author.id}`}
-                  className="text-sm font-semibold text-ink-900 transition-colors hover:text-accent-700"
-                >
-                  {post.author.username}
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    to={`/users/${post.author.id}`}
+                    className="text-sm font-semibold text-ink-900 transition-colors hover:text-accent-700"
+                  >
+                    {post.author.username}
+                  </Link>
+                  {post.author.isMasterAccount && (
+                    <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                      👑 마스터
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-ink-400">
                   {formatDate(post.createdAt)}
                 </span>
